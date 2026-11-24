@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="fr" data-theme="auto">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>HelpNow — Informations légales</title>
+<meta name="description" content="Conditions d'utilisation, politique de confidentialité et mentions légales de HelpNow." />
+<style>
+  :root{
+    --coral:#F2714E; --coral-dark:#D8573A; --marine:#0B1623;
+    --bg:#FBFBFC; --surface:#FFFFFF; --surface-2:#F2F4F7; --line:#E6EAF0;
+    --text:#14233A; --muted:#5B6878; --radius:16px;
+  }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+    --bg:#0B1623; --surface:#121F33; --surface-2:#17273E; --line:#22324A; --text:#EAF0F7; --muted:#9AA8BC;
+  }}
+  :root[data-theme="dark"]{ --bg:#0B1623; --surface:#121F33; --surface-2:#17273E; --line:#22324A; --text:#EAF0F7; --muted:#9AA8BC; }
+  *{box-sizing:border-box} html,body{margin:0}
+  body{background:var(--bg);color:var(--text);line-height:1.6;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:820px;margin:0 auto;padding:0 20px 64px}
+  .nav{display:flex;align-items:center;gap:12px;padding:18px 0;flex-wrap:wrap}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;text-decoration:none;color:var(--text)}
+  .logo .mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--coral),var(--coral-dark));display:grid;place-items:center;color:#fff;font-weight:900}
+  .logo .now{color:var(--coral)}
+  .spacer{flex:1}
+  .back{color:var(--coral-dark);font-weight:700;text-decoration:none;font-size:14px}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 22px}
+  .tabs button{font:inherit;font-weight:700;font-size:14px;cursor:pointer;border:1px solid var(--line);
+    background:var(--surface);color:var(--text);padding:8px 14px;border-radius:999px}
+  .tabs button.active{background:var(--coral);border-color:transparent;color:#fff}
+  .md{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+  .md h1{font-size:26px;margin:0 0 14px}
+  .md h2{font-size:18px;margin:26px 0 8px}
+  .md h3{font-size:15px;margin:18px 0 6px}
+  .md p,.md li{color:var(--text)}
+  .md a{color:var(--coral-dark)}
+  .md blockquote{margin:14px 0;padding:12px 16px;background:var(--surface-2);border-radius:12px;color:var(--muted)}
+  .md code{background:var(--surface-2);padding:1px 5px;border-radius:5px}
+  .md table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  .md th,.md td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  .md th{background:var(--surface-2)}
+  footer{color:var(--muted);font-size:12px;text-align:center;padding:26px 0}
+  footer a{color:var(--coral-dark);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="nav">
+    <a class="logo" href="index.html"><span class="mark">N</span> Help<span class="now">Now</span></a>
+    <span class="spacer"></span>
+    <a class="back" href="https://johnibgg.github.io/helpnow/">Ouvrir l'application →</a>
+  </nav>
+
+  <div class="tabs">
+    <button data-doc="cgu">Conditions d'utilisation</button>
+    <button data-doc="confidentialite">Confidentialité</button>
+    <button data-doc="mentions">Mentions légales</button>
+  </div>
+
+  <article id="content" class="md">Chargement…</article>
+
+  <footer>HelpNow · <a href="index.html">Accueil</a> · Version de démonstration.</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script>
+  const out = document.getElementById('content');
+  const btns = [...document.querySelectorAll('[data-doc]')];
+  function setActive(doc){ btns.forEach(b => b.classList.toggle('active', b.dataset.doc === doc)); }
+  async function load(doc){
+    setActive(doc);
+    out.textContent = 'Chargement…';
+    try {
+      const md = await fetch('legal/' + doc + '.md', {cache:'no-cache'}).then(r => {
+        if(!r.ok) throw new Error(r.status); return r.text();
+      });
+      out.innerHTML = (window.marked ? marked.parse(md) : md);
+      window.scrollTo(0,0);
+      try { history.replaceState(null,'', '#'+doc); } catch(e){}
+    } catch(e){
+      out.textContent = 'Impossible de charger le texte. Réessayez.';
+    }
+  }
+  btns.forEach(b => b.onclick = () => load(b.dataset.doc));
+  const start = (location.hash || '#cgu').slice(1);
+  load(btns.some(b => b.dataset.doc === start) ? start : 'cgu');
+</script>
+</body>
+</html>

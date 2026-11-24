@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="fr" data-theme="auto">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>HelpNow — Admin</title>
+<meta name="description" content="Tableau de bord d'administration HelpNow — données réelles Supabase (lecture publique)." />
+<style>
+  :root{
+    --coral:#F2714E; --coral-dark:#D8573A; --marine:#0B1623; --marine-2:#14233A;
+    --bg:#F6F7F9; --surface:#FFFFFF; --surface-2:#EEF1F5; --line:#E2E7EE;
+    --text:#14233A; --muted:#5B6878; --ok:#1E9E6A; --warn:#E0A020; --info:#2E7CF6;
+    --radius:16px; --shadow:0 1px 3px rgba(16,32,55,.08),0 8px 24px rgba(16,32,55,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0B1623; --surface:#121F33; --surface-2:#17273E; --line:#22324A;
+      --text:#EAF0F7; --muted:#9AA8BC; --shadow:0 1px 3px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0B1623; --surface:#121F33; --surface-2:#17273E; --line:#22324A;
+    --text:#EAF0F7; --muted:#9AA8BC; --shadow:0 1px 3px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box} html,body{margin:0}
+  body{background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,sans-serif; line-height:1.5}
+  a{color:var(--coral-dark)}
+  .wrap{max-width:1100px; margin:0 auto; padding:16px}
+  header.top{display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:18px 0 8px}
+  .logo{display:flex; align-items:center; gap:10px; font-weight:800; font-size:20px}
+  .logo .mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--coral),var(--coral-dark));
+    display:grid;place-items:center;color:#fff;font-weight:900}
+  .logo .now{color:var(--coral)}
+  .spacer{flex:1}
+  .pill{font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+  button.btn{font:inherit;font-weight:700;cursor:pointer;border:1px solid var(--line);background:var(--surface);
+    color:var(--text);padding:8px 14px;border-radius:10px}
+  button.btn.coral{background:var(--coral);border-color:transparent;color:#fff}
+  .sub{color:var(--muted);font-size:13px;margin:2px 0 14px}
+  .grid{display:grid;gap:14px}
+  .stats{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
+  .stat .n{font-size:30px;font-weight:800;letter-spacing:-.5px}
+  .stat .l{color:var(--muted);font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .cols{grid-template-columns:1fr 1fr}
+  @media(max-width:760px){.cols{grid-template-columns:1fr}}
+  h2.sec{font-size:15px;margin:22px 0 10px;letter-spacing:.2px}
+  .bar-row{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:13px}
+  .bar-row .k{width:120px;color:var(--muted);flex-shrink:0;text-transform:capitalize}
+  .bar{flex:1;height:10px;background:var(--surface-2);border-radius:999px;overflow:hidden}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--coral),var(--coral-dark));border-radius:999px}
+  .bar-row .v{width:34px;text-align:right;font-weight:700}
+  ul.list{list-style:none;margin:0;padding:0}
+  ul.list li{padding:10px 0;border-top:1px solid var(--line);display:flex;gap:10px;align-items:flex-start}
+  ul.list li:first-child{border-top:none}
+  .tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--surface-2);color:var(--muted);white-space:nowrap}
+  .tag.urgent{background:rgba(224,32,32,.12);color:#D13}
+  .muted{color:var(--muted)} .small{font-size:12px}
+  .stars{color:var(--warn);letter-spacing:1px}
+  .lock{border:1px dashed var(--line);background:var(--surface-2)}
+  .lock h3{margin:0 0 6px;font-size:14px}
+  footer{color:var(--muted);font-size:12px;text-align:center;padding:26px 0}
+  .err{background:rgba(224,32,32,.1);border:1px solid rgba(224,32,32,.3);color:#D13;padding:12px 14px;border-radius:12px}
+  .skl{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="logo"><span class="mark">N</span> Help<span class="now">Now</span> · Admin</div>
+    <span class="spacer"></span>
+    <span class="pill" id="src">lecture publique (clé anon)</span>
+    <button class="btn" id="theme">◐ Thème</button>
+    <button class="btn coral" id="refresh">↻ Rafraîchir</button>
+  </header>
+  <p class="sub">Tableau de bord — données <strong>réelles</strong> du backend Supabase.
+     Vue en <strong>lecture publique</strong> (clé anon, aucune donnée privée). Dernière MAJ : <span id="updated">—</span>.</p>
+
+  <div id="error"></div>
+
+  <div class="grid stats" id="stats"><div class="card skl">Chargement…</div></div>
+
+  <div class="grid cols">
+    <div class="card">
+      <h2 class="sec" style="margin-top:4px">Demandes par statut</h2>
+      <div id="byStatus" class="skl small">…</div>
+    </div>
+    <div class="card">
+      <h2 class="sec" style="margin-top:4px">Demandes par catégorie</h2>
+      <div id="byCat" class="skl small">…</div>
+    </div>
+  </div>
+
+  <div class="grid cols">
+    <div class="card">
+      <h2 class="sec" style="margin-top:4px">Demandes récentes</h2>
+      <ul class="list" id="recentReq"><li class="skl">…</li></ul>
+    </div>
+    <div class="card">
+      <h2 class="sec" style="margin-top:4px">Membres & avis</h2>
+      <ul class="list" id="members"><li class="skl">…</li></ul>
+    </div>
+  </div>
+
+  <h2 class="sec">Zone privilégiée (missions, portefeuille, commissions)</h2>
+  <div class="card lock">
+    <h3>🔒 Réservé au backend sécurisé</h3>
+    <p class="muted small" style="margin:0 0 12px">
+      Missions, portefeuille et commissions (10&nbsp;%) sont protégés par RLS&nbsp;:
+      <strong>non lisibles</strong> avec la clé publique. Ils passent par un
+      <strong>endpoint serveur sécurisé</strong> — Edge Function
+      <code>admin-stats</code> qui lit avec la clé <code>service_role</code>
+      <em>côté serveur</em> (jamais dans cette page), gardée par un
+      <code>ADMIN_TOKEN</code>. Le token est saisi <strong>localement</strong>
+      (navigateur), jamais stocké dans le dépôt. Déploiement&nbsp;: voir
+      <code>backend/supabase/functions/admin-stats</code>.
+    </p>
+    <div class="bar-row" style="gap:8px">
+      <input id="adminTok" type="password" placeholder="ADMIN_TOKEN"
+        style="flex:1;font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--text)" />
+      <button class="btn coral" id="loadPriv">Charger les stats privées</button>
+    </div>
+    <div id="privOut" class="small muted" style="margin-top:10px"></div>
+  </div>
+
+  <footer>HelpNow Admin · statique (GitHub Pages) · lit Supabase via la clé publique · aucune action d'écriture.</footer>
+</div>
+
+<script>
+const config = {
+  supabaseUrl: 'https://ihnryflctgwouzhvmkqu.supabase.co',
+  anonKey: 'sb_publishable_MFioCbWY84KDJ89r1mTThw_n1aIqYQR',
+  // Emplacement prêt-à-brancher pour les actions PRIVILÉGIÉES (service_role côté
+  // serveur). NE JAMAIS mettre le service_role ici : laisser un endpoint sécurisé.
+  adminEndpoint: null, // ex. 'https://<projet>.functions.supabase.co/admin'
+};
+const H = { apikey: config.anonKey, Authorization: 'Bearer ' + config.anonKey };
+const api = (path) => fetch(config.supabaseUrl + '/rest/v1/' + path, { headers: H }).then(r => r.ok ? r.json() : Promise.reject(r.status));
+const el = (id) => document.getElementById(id);
+const esc = (s) => (s==null?'':String(s)).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmtDate = (s) => { try { return new Date(s).toLocaleString('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); } catch(e){ return ''; } };
+const STATUS_LABEL = { published:'publiée', matched:'acceptée', in_progress:'en cours', done:'terminée', cancelled:'annulée', draft:'brouillon' };
+
+async function load(){
+  el('error').innerHTML = '';
+  try {
+    const [reqs, profiles, reviews, cats, countries] = await Promise.all([
+      api('requests?select=id,title,status,category_id,is_urgent,is_free,budget,currency_code,created_at,category:service_categories(name)&order=created_at.desc'),
+      api('profiles?select=id,display_name,rating,reviews_count,missions_completed,verification_status,country_code,created_at&order=created_at.desc'),
+      api('reviews?select=id,rating,comment,created_at&order=created_at.desc&limit=8'),
+      api('service_categories?select=id,name,slug'),
+      api('countries?select=code,name,currency_code,is_active'),
+    ]);
+    render({reqs, profiles, reviews, cats, countries});
+    el('updated').textContent = new Date().toLocaleTimeString('fr-FR');
+  } catch (e) {
+    el('error').innerHTML = '<div class="err">Impossible de charger les données (code '+esc(e)+'). Réessayez.</div>';
+  }
+}
+
+function render({reqs, profiles, reviews, cats, countries}){
+  const activeCountries = countries.filter(c=>c.is_active);
+  const urgent = reqs.filter(r=>r.is_urgent).length;
+  // Stat cards
+  el('stats').innerHTML = [
+    ['Demandes', reqs.length, 'var(--coral)'],
+    ['Membres', profiles.length, 'var(--info)'],
+    ['Avis', reviews.length, 'var(--warn)'],
+    ['Demandes urgentes', urgent, '#D13'],
+    ['Catégories', cats.length, 'var(--ok)'],
+    ['Pays actifs', activeCountries.length, 'var(--info)'],
+  ].map(([l,n,c]) => `<div class="card stat"><div class="n">${n}</div><div class="l"><span class="dot" style="background:${c}"></span>${l}</div></div>`).join('');
+
+  // Par statut
+  const byStatus = groupCount(reqs, r => r.status);
+  el('byStatus').className = '';
+  el('byStatus').innerHTML = bars(byStatus, reqs.length, k => STATUS_LABEL[k]||k);
+
+  // Par catégorie
+  const byCat = groupCount(reqs, r => (r.category && r.category.name) || '—');
+  el('byCat').className = '';
+  el('byCat').innerHTML = bars(byCat, reqs.length, k => k) || '<span class="muted small">Aucune demande.</span>';
+
+  // Demandes récentes
+  el('recentReq').innerHTML = reqs.slice(0,8).map(r => `
+    <li>
+      <span class="tag ${r.is_urgent?'urgent':''}">${r.is_urgent?'urgent':esc(STATUS_LABEL[r.status]||r.status)}</span>
+      <span style="flex:1">${esc(r.title)}<br><span class="muted small">${esc((r.category&&r.category.name)||'')} · ${fmtDate(r.created_at)}</span></span>
+      <span class="small muted">${r.is_free?'gratuit':(r.budget?esc(r.budget)+' '+esc(r.currency_code||''):'—')}</span>
+    </li>`).join('') || '<li class="muted">Aucune demande.</li>';
+
+  // Membres + avis
+  const memHtml = profiles.map(p => `
+    <li>
+      <span style="flex:1">${esc(p.display_name||'—')} ${p.verification_status==='verifie'?'✅':''}
+        <br><span class="muted small">★ ${p.rating??'—'} · ${p.missions_completed||0} missions · ${esc(p.country_code||'')}</span></span>
+      <span class="small muted">${fmtDate(p.created_at)}</span>
+    </li>`).join('');
+  const revHtml = reviews.slice(0,4).map(r => `
+    <li><span class="stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span>
+      <span style="flex:1" class="small">${esc(r.comment||'')}<br><span class="muted">${fmtDate(r.created_at)}</span></span></li>`).join('');
+  el('members').innerHTML = memHtml + (reviews.length? '<li style="border-top:2px solid var(--line)"><strong class="small">Avis récents</strong></li>'+revHtml : '');
+}
+
+function groupCount(arr, keyFn){ const m={}; for(const x of arr){ const k=keyFn(x); m[k]=(m[k]||0)+1; } return m; }
+function bars(obj, total, labelFn){
+  const entries = Object.entries(obj).sort((a,b)=>b[1]-a[1]);
+  if(!entries.length) return '';
+  return entries.map(([k,v]) => {
+    const pct = total? Math.round(v/total*100) : 0;
+    return `<div class="bar-row"><span class="k">${esc(labelFn(k))}</span><span class="bar"><i style="width:${pct}%"></i></span><span class="v">${v}</span></div>`;
+  }).join('');
+}
+
+// Thème
+el('theme').onclick = () => {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur==='dark' ? 'light' : (cur==='light' ? 'dark' : 'dark');
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem('hn-admin-theme', next); } catch(e){}
+};
+try { const t = localStorage.getItem('hn-admin-theme'); if(t) document.documentElement.setAttribute('data-theme', t); } catch(e){}
+// ── Zone privilégiée : agrégats PRIVÉS via l'endpoint serveur sécurisé ──
+const MISSION_LABEL = { confirmed:'confirmée', in_progress:'en cours', done:'terminée', validated:'validée', cancelled:'annulée' };
+function pstat(l,n){ return `<div class="card stat" style="padding:12px"><div class="n" style="font-size:22px">${n==null?'—':esc(n)}</div><div class="l">${esc(l)}</div></div>`; }
+function renderPrivate(d){
+  const m = d.missions||{}, w = d.wallet||{}, cur = d.currency||'XOF';
+  const money = (n) => (n==null?'—':Number(n).toLocaleString('fr-FR')+' '+cur);
+  el('privOut').innerHTML = `
+    <div class="grid stats" style="margin:6px 0 12px">
+      ${pstat('Missions', m.total)}
+      ${pstat('Volume validé', money(m.validatedVolume))}
+      ${pstat('Commission ~10%', money(m.commissionEstimate))}
+      ${pstat('Transactions', w.transactions)}
+      ${pstat('Gains en attente', money(w.earningsPending))}
+      ${pstat('Gains disponibles', money(w.earningsAvailable))}
+    </div>
+    <div class="grid cols">
+      <div class="card"><strong class="small">Missions par statut</strong>${bars(m.byStatus||{}, m.total||0, k=>MISSION_LABEL[k]||k) || '<div class="muted small">—</div>'}</div>
+      <div class="card"><strong class="small">Transactions par type</strong>${bars(w.byType||{}, w.transactions||0, k=>k) || '<div class="muted small">—</div>'}</div>
+    </div>`;
+}
+async function loadPrivate(){
+  const out = el('privOut'), tok = el('adminTok').value.trim();
+  if(!config.adminEndpoint){ out.innerHTML = 'Endpoint non configuré : renseignez <code>config.adminEndpoint</code> (URL de la fonction <code>admin-stats</code> déployée).'; return; }
+  if(!tok){ out.textContent = 'Entrez le ADMIN_TOKEN.'; return; }
+  out.textContent = 'Chargement…';
+  try {
+    const r = await fetch(config.adminEndpoint, { headers: { 'x-admin-token': tok } });
+    if(r.status===401){ out.innerHTML = '<span style="color:#D13">Token invalide.</span>'; return; }
+    const d = await r.json();
+    if(d && d.configured===false){ out.innerHTML = '<span class="muted">Fonction déployée mais ADMIN_TOKEN non défini côté serveur.</span>'; return; }
+    try { localStorage.setItem('hn-admin-tok', tok); } catch(e){}
+    renderPrivate(d);
+  } catch(e){ out.innerHTML = '<span style="color:#D13">Appel impossible ('+esc(String(e))+').</span>'; }
+}
+el('loadPriv').onclick = loadPrivate;
+try { const t = localStorage.getItem('hn-admin-tok'); if(t) el('adminTok').value = t; } catch(e){}
+
+el('refresh').onclick = load;
+load();
+</script>
+</body>
+</html>

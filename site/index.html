@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="fr" data-theme="auto">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title data-i18n="title">HelpNow — un besoin, quelqu'un près de vous</title>
+<meta name="description" data-i18n-meta="desc" content="HelpNow : un service de proximité. Un besoin → quelqu'un tout près voit, accepte et vient. Bénin, Togo, Côte d'Ivoire, Cameroun." />
+<meta property="og:title" content="HelpNow — l'entraide de proximité" />
+<meta property="og:description" content="Un besoin maintenant ? Quelqu'un tout près peut vous aider. Pharmacie, moto, courses, dépannage, ménage…" />
+<style>
+  :root{
+    --coral:#F2714E; --coral-2:#FF8A6B; --coral-dark:#D8573A; --marine:#0B1623; --marine-2:#14233A;
+    --bg:#FBFBFC; --surface:#FFFFFF; --surface-2:#F2F4F7; --line:#E6EAF0;
+    --text:#14233A; --muted:#5B6878;
+    --radius:18px; --shadow:0 2px 6px rgba(16,32,55,.06),0 18px 40px rgba(16,32,55,.08);
+  }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+    --bg:#0B1623; --surface:#121F33; --surface-2:#17273E; --line:#22324A; --text:#EAF0F7; --muted:#9AA8BC;
+    --shadow:0 2px 6px rgba(0,0,0,.3),0 18px 44px rgba(0,0,0,.4);
+  }}
+  :root[data-theme="dark"]{ --bg:#0B1623; --surface:#121F33; --surface-2:#17273E; --line:#22324A; --text:#EAF0F7; --muted:#9AA8BC;
+    --shadow:0 2px 6px rgba(0,0,0,.3),0 18px 44px rgba(0,0,0,.4); }
+  *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--bg);color:var(--text);
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+  a{color:inherit;text-decoration:none}
+  .nav{display:flex;align-items:center;gap:12px;padding:18px 0}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px}
+  .logo .mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--coral),var(--coral-dark));display:grid;place-items:center;color:#fff;font-weight:900}
+  .logo .now{color:var(--coral)}
+  .nav .spacer{flex:1}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;padding:12px 20px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--text);cursor:pointer;transition:transform .12s}
+  .btn:hover{transform:translateY(-1px)}
+  .btn.coral{background:linear-gradient(135deg,var(--coral),var(--coral-dark));border-color:transparent;color:#fff;box-shadow:0 8px 20px rgba(216,87,58,.3)}
+  .btn.ghost{background:transparent}
+  .btn.sm{padding:9px 13px;font-size:13px}
+  /* Hero */
+  .hero{position:relative;overflow:hidden;border-radius:26px;margin:8px 0 6px;color:#fff;
+    background:radial-gradient(1200px 500px at 10% -20%,#1d3a63 0%,transparent 60%),linear-gradient(135deg,var(--marine) 0%,var(--marine-2) 70%)}
+  .hero .inner{padding:64px 40px}
+  .hero h1{font-size:clamp(30px,6vw,52px);line-height:1.08;margin:0 0 14px;font-weight:850;letter-spacing:-1px}
+  .hero h1 .hl{color:var(--coral-2)}
+  .hero p.lead{font-size:clamp(16px,2.4vw,20px);color:#cdd6e4;max-width:620px;margin:0 0 26px}
+  .hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+  .badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+  .badge{font-size:13px;font-weight:600;color:#cdd6e4;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);padding:7px 12px;border-radius:999px}
+  section{padding:42px 0}
+  h2.sec{font-size:clamp(22px,3.4vw,30px);font-weight:800;letter-spacing:-.5px;margin:0 0 6px;text-align:center}
+  .sec-sub{color:var(--muted);text-align:center;max-width:560px;margin:0 auto 28px}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:760px){.steps{grid-template-columns:1fr}}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+  .step .k{width:40px;height:40px;border-radius:12px;background:var(--surface-2);display:grid;place-items:center;font-size:22px;margin-bottom:12px}
+  .step h3{margin:0 0 6px;font-size:17px}
+  .step p{margin:0;color:var(--muted);font-size:14px}
+  .cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+  .cat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;align-items:center;gap:12px;font-weight:600}
+  .cat .ic{font-size:22px}
+  .cities{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .city{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:10px 18px;font-weight:700}
+  .city span{color:var(--muted);font-weight:500;font-size:13px}
+  .note{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);padding:18px 22px;color:var(--muted);font-size:14px;text-align:center;max-width:760px;margin:0 auto}
+  .finalcta{background:linear-gradient(135deg,var(--coral),var(--coral-dark));color:#fff;border-radius:24px;padding:40px;text-align:center}
+  .finalcta h2{color:#fff;margin:0 0 10px}
+  .finalcta p{color:#ffe9e2;margin:0 0 22px}
+  .finalcta .btn{background:#fff;color:var(--coral-dark);border:none}
+  .finalcta .btn.ghost{background:rgba(255,255,255,.14);color:#fff}
+  footer{color:var(--muted);font-size:13px;text-align:center;padding:30px 0}
+  footer a{color:var(--coral-dark);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="nav">
+    <div class="logo"><span class="mark">N</span> Help<span class="now">Now</span></div>
+    <span class="spacer"></span>
+    <a class="btn ghost" href="#comment" data-i18n="navHow">Comment ça marche</a>
+    <button class="btn ghost sm" id="lang" aria-label="Language">EN</button>
+    <a class="btn coral" href="https://johnibgg.github.io/helpnow/" data-i18n="navOpen">Ouvrir l'app</a>
+  </nav>
+
+  <header class="hero">
+    <div class="inner">
+      <h1 data-i18n="heroH1">Un besoin <span class="hl">maintenant</span> ?<br>Quelqu'un <span class="hl">tout près</span> peut vous aider.</h1>
+      <p class="lead" data-i18n="heroLead">HelpNow, c'est l'entraide de proximité. Vous décrivez votre besoin, quelqu'un juste à côté le voit, accepte et vient. Chaque membre peut demander <em>et</em> rendre service.</p>
+      <div class="cta">
+        <a class="btn coral" href="https://johnibgg.github.io/helpnow/" data-i18n="heroOpen">▶ Ouvrir l'application</a>
+        <a class="btn ghost" style="color:#fff;border-color:rgba(255,255,255,.3)" href="https://github.com/johnibgg/helpnow/releases/tag/v0.1.0-demo" data-i18n="heroApk">⬇ Installer l'APK Android</a>
+      </div>
+      <div class="badges">
+        <span class="badge" data-i18n="badge1">📍 Proximité immédiate</span>
+        <span class="badge" data-i18n="badge2">🤝 Demandeur &amp; prestataire</span>
+        <span class="badge" data-i18n="badge3">💬 Négociation &amp; messagerie</span>
+        <span class="badge" data-i18n="badge4">⭐ Avis après chaque mission</span>
+      </div>
+    </div>
+  </header>
+
+  <section id="comment">
+    <h2 class="sec" data-i18n="howTitle">Comment ça marche</h2>
+    <p class="sec-sub" data-i18n="howSub">Trois étapes, et quelqu'un de proche s'en occupe.</p>
+    <div class="steps">
+      <div class="step"><div class="k">📝</div><h3 data-i18n="step1Title">1. Décrivez votre besoin</h3><p data-i18n="step1Body">Récupérer un médicament, laver la moto, un coup de main, une course urgente… Dites ce qu'il vous faut et où.</p></div>
+      <div class="step"><div class="k">📍</div><h3 data-i18n="step2Title">2. Quelqu'un près de vous voit</h3><p data-i18n="step2Body">Les personnes à proximité reçoivent votre demande. La plus proche accepte et vous propose son prix.</p></div>
+      <div class="step"><div class="k">✅</div><h3 data-i18n="step3Title">3. Il vient, vous validez</h3><p data-i18n="step3Body">Suivi avec codes de début et de fin, paiement clair (commission 10 %), puis vous laissez un avis.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec" data-i18n="catsTitle">Pour mille petits besoins du quotidien</h2>
+    <p class="sec-sub" data-i18n="catsSub">Des catégories pensées pour la proximité — pas une liste fermée.</p>
+    <div class="cats">
+      <div class="cat"><span class="ic">🏍️</span> <span data-i18n="cat1">Livraison &amp; colis</span></div>
+      <div class="cat"><span class="ic">💊</span> <span data-i18n="cat2">Pharmacie &amp; santé</span></div>
+      <div class="cat"><span class="ic">🛒</span> <span data-i18n="cat3">Courses</span></div>
+      <div class="cat"><span class="ic">🔧</span> <span data-i18n="cat4">Dépannage &amp; route</span></div>
+      <div class="cat"><span class="ic">🧹</span> <span data-i18n="cat5">Ménage &amp; maison</span></div>
+      <div class="cat"><span class="ic">🛵</span> <span data-i18n="cat6">Moto &amp; transport</span></div>
+      <div class="cat"><span class="ic">🔨</span> <span data-i18n="cat7">Bricolage &amp; réparation</span></div>
+      <div class="cat"><span class="ic">🤲</span> <span data-i18n="cat8">Coup de main</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec" data-i18n="citiesTitle">On démarre en Afrique de l'Ouest &amp; centrale</h2>
+    <p class="sec-sub" data-i18n="citiesSub">Lancement dans ces villes — et au-delà ensuite.</p>
+    <div class="cities">
+      <div class="city">🇧🇯 Cotonou <span data-i18n="city1">· Bénin</span></div>
+      <div class="city">🇹🇬 Lomé <span data-i18n="city2">· Togo</span></div>
+      <div class="city">🇨🇮 Abidjan <span data-i18n="city3">· Côte d'Ivoire</span></div>
+      <div class="city">🇨🇲 Douala &amp; Yaoundé <span data-i18n="city4">· Cameroun</span></div>
+    </div>
+    <p style="text-align:center;color:var(--muted);margin-top:16px" data-i18n="devises">Devises XOF (FCFA UEMOA) et XAF (FCFA CEMAC).</p>
+  </section>
+
+  <section>
+    <div class="note" data-i18n="noteText">
+      <strong>Nouveau service.</strong> HelpNow démarre : pas de chiffres gonflés ni de faux avis ici.
+      La confiance se construit avec de vraies missions, des profils vérifiés et des avis authentiques.
+      Les paiements Mobile Money et la vérification d'identité arrivent progressivement.
+    </div>
+  </section>
+
+  <section>
+    <div class="finalcta">
+      <h2 data-i18n="ctaTitle">Prêt à essayer ?</h2>
+      <p data-i18n="ctaSub">Ouvrez l'application dans votre navigateur, ou installez-la sur Android.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="btn" href="https://johnibgg.github.io/helpnow/" data-i18n="ctaOpen">▶ Ouvrir l'application</a>
+        <a class="btn ghost" href="https://github.com/johnibgg/helpnow/releases/tag/v0.1.0-demo" data-i18n="ctaApk">⬇ APK Android</a>
+      </div>
+    </div>
+  </section>
+
+  <footer data-i18n="footerText">
+    HelpNow — l'entraide de proximité ·
+    <a href="https://johnibgg.github.io/helpnow/">Application</a> ·
+    <a href="legal.html">Informations légales</a> ·
+    Version de démonstration. Pas de vrais paiements pour l'instant.
+  </footer>
+</div>
+
+<script>
+// Bilingue FR/EN : dictionnaire par clé data-i18n (innerHTML), bascule + persistance.
+const T = {
+  en: {
+    title: "HelpNow — a need, someone nearby",
+    desc: "HelpNow: a proximity service. A need → someone right nearby sees it, accepts and comes. Benin, Togo, Ivory Coast, Cameroon.",
+    navHow: "How it works",
+    navOpen: "Open the app",
+    heroH1: 'A need <span class="hl">right now</span>?<br>Someone <span class="hl">nearby</span> can help you.',
+    heroLead: "HelpNow is neighbourly help. You describe your need, someone right beside you sees it, accepts and comes. Every member can both request <em>and</em> provide help.",
+    heroOpen: "▶ Open the app",
+    heroApk: "⬇ Install the Android APK",
+    badge1: "📍 Instant proximity",
+    badge2: "🤝 Requester &amp; provider",
+    badge3: "💬 Negotiation &amp; messaging",
+    badge4: "⭐ Reviews after each mission",
+    howTitle: "How it works",
+    howSub: "Three steps, and someone nearby takes care of it.",
+    step1Title: "1. Describe your need",
+    step1Body: "Pick up medicine, wash the motorbike, a helping hand, an urgent errand… Say what you need and where.",
+    step2Title: "2. Someone nearby sees it",
+    step2Body: "People nearby receive your request. The closest one accepts and offers their price.",
+    step3Title: "3. They come, you confirm",
+    step3Body: "Tracking with start and end codes, clear payment (10% commission), then you leave a review.",
+    catsTitle: "For a thousand small everyday needs",
+    catsSub: "Categories designed for proximity — not a closed list.",
+    cat1: "Delivery &amp; parcels",
+    cat2: "Pharmacy &amp; health",
+    cat3: "Groceries",
+    cat4: "Breakdown &amp; roadside",
+    cat5: "Cleaning &amp; home",
+    cat6: "Motorbike &amp; transport",
+    cat7: "DIY &amp; repair",
+    cat8: "Helping hand",
+    citiesTitle: "We’re starting in West &amp; Central Africa",
+    citiesSub: "Launching in these cities — and beyond next.",
+    city1: "· Benin",
+    city2: "· Togo",
+    city3: "· Ivory Coast",
+    city4: "· Cameroon",
+    devises: "Currencies XOF (CFA franc, WAEMU) and XAF (CFA franc, CEMAC).",
+    noteText: "<strong>New service.</strong> HelpNow is just starting: no inflated numbers or fake reviews here. Trust is built with real missions, verified profiles and authentic reviews. Mobile Money payments and identity verification are coming gradually.",
+    ctaTitle: "Ready to try?",
+    ctaSub: "Open the app in your browser, or install it on Android.",
+    ctaOpen: "▶ Open the app",
+    ctaApk: "⬇ Android APK",
+    footerText: 'HelpNow — neighbourly help · <a href="https://johnibgg.github.io/helpnow/">App</a> · <a href="legal.html">Legal</a> · Demo version. No real payments yet.'
+  }
+};
+
+const FR = {}; // capturé depuis le HTML (la page est écrite en FR par défaut)
+document.querySelectorAll('[data-i18n]').forEach(n => { FR[n.getAttribute('data-i18n')] = n.innerHTML; });
+FR.title = document.title;
+FR.desc = document.querySelector('[data-i18n-meta="desc"]').getAttribute('content');
+
+function setLang(lang){
+  const dict = lang === 'en' ? T.en : FR;
+  document.querySelectorAll('[data-i18n]').forEach(n => {
+    const k = n.getAttribute('data-i18n');
+    if (dict[k] != null) n.innerHTML = dict[k];
+  });
+  if (dict.title) document.title = dict.title;
+  const meta = document.querySelector('[data-i18n-meta="desc"]');
+  if (meta && dict.desc) meta.setAttribute('content', dict.desc);
+  document.documentElement.setAttribute('lang', lang);
+  document.getElementById('lang').textContent = lang === 'en' ? 'FR' : 'EN';
+  try { localStorage.setItem('hn-site-lang', lang); } catch(e){}
+}
+
+document.getElementById('lang').onclick = () => {
+  const cur = document.documentElement.getAttribute('lang') || 'fr';
+  setLang(cur === 'en' ? 'fr' : 'en');
+};
+try {
+  const saved = localStorage.getItem('hn-site-lang');
+  const lang = saved || ((navigator.language || 'fr').toLowerCase().startsWith('en') ? 'en' : 'fr');
+  if (lang === 'en') setLang('en');
+  else document.getElementById('lang').textContent = 'EN';
+} catch(e){}
+</script>
+</body>
+</html>
